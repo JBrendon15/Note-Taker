@@ -17,10 +17,27 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/api/notes', (req, res) => {
-
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        if (err){
+            console.error(err)
+            return
+        }
+        console.log(data)
+        res.json(data)
+    } )
 });
 
-app.post('/notes', (req, res) => {
+app.post('/api/notes', (req, res) => {
+    console.info(`${req.method} request received to add a note`);
+    
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        if(err) {
+            console.error(err)
+            return
+        } 
+        const notesList = JSON.parse(data)
+        notesList.push()
+    })
 
 });
 
