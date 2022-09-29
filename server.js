@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const PORT = process.env.PORT || 3001;
 const app = express();
-const { v4: uuid }= require('uuid');
+const { v4: uuidv4 }= require('uuid');
  
 app.use(express.static('public'));
 app.use(express.json());
@@ -35,7 +35,7 @@ app.post('/api/notes', (req, res) => {
     const newNote = {
         title,
         text,
-        text_id: uuid(),
+        text_id: uuidv4(),
     }
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if(err) {
