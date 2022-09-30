@@ -4,6 +4,8 @@ const fs = require('fs');
 const PORT = process.env.PORT || 3001;
 const app = express();
 const { v4: uuidv4 }= require('uuid');
+const noteArr = require('./db/db.json')
+
  
 app.use(express.static('public'));
 app.use(express.json());
@@ -42,18 +44,32 @@ app.post('/api/notes', (req, res) => {
             console.error(err)
             return
         }
-        const noteList = JSON.parse(data)
-        noteList.push(newNote)
-        fs.writeFile(`./db/db.json`, JSON.stringify(noteList, null, 4), (err) => {
+        noteArr.push(newNote)
+        fs.writeFile(`./db/db.json`, JSON.stringify(noteArr, null, 4), (err) => {
             err ? console.error(err) : console.info(`New note has been written to JSON file`)
         });
         
-        res.json(noteList);
+        res.json(noteArr);
     });
     }
     else {
         res.json('Error creating note')
     }   
-});
+}); 
+app.delete('/api/notes/:id', (req, res) => {
+    for(let i = 0; i < noteArr.length; i++){
+       let currentNote = noteArr[i];
+       if(req.params.id === currentNote.id){
+            noteArr.splice(i, 1);
+        }
+    }   
+    fs.writeFile('./db/db.json', JSON.stringify(noteArr, null, 4), (err) => {
+        err ? console.error(err) : console.info(`Note Deleted`)
+    })
+    res.json(noteArr) 
+   
+    
+
+})
 
 app.listen(PORT, () => console.log(`App listening at http://localhost:${PORT}`));
