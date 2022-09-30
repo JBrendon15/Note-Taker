@@ -23,8 +23,8 @@ app.get('/api/notes', (req, res) => {
             console.error(err)
             return
         }
-        console.log(data)
-        res.json(data)
+        const notes = JSON.parse(data);
+        res.json(notes);
     } )
 });
 
@@ -35,31 +35,24 @@ app.post('/api/notes', (req, res) => {
     const newNote = {
         title,
         text,
-        text_id: uuidv4(),
+        id: uuidv4(),
     }
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if(err) {
             console.error(err)
             return
         }
-        console.log(data) 
-        const notesList = JSON.parse(data)
-        notesList.push(newNote)
-        console.log(notesList)
-        fs.writeFile(`./db/db.json`, JSON.stringify(notesList, null, 4), (err) => {
+        const noteList = JSON.parse(data)
+        noteList.push(newNote)
+        fs.writeFile(`./db/db.json`, JSON.stringify(noteList, null, 4), (err) => {
             err ? console.error(err) : console.info(`New note has been written to JSON file`)
         });
         
+        res.json(noteList);
     });
-
-    const response = {
-        status: 'Sucess!',
-        body: newNote,
-    };
-    res.status(201).json(response);
     }
     else {
-        res.status(500).json('Error creating note')
+        res.json('Error creating note')
     }   
 });
 
